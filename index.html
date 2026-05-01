@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Visión Munaska — Plataforma de gestión del programa de enrolamiento. Sigue el progreso hacia la meta de 93 vidas." />
+  <meta name="theme-color" content="#f59e0b" />
+  <title>Visión Munaska 🐝 — CELIDER</title>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+</head>
+
+<body>
+
+  <!-- ═══════════ SPINNER ═══════════ -->
+  <div class="spinner-overlay" id="spinner" aria-label="Cargando...">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- ═══════════ TOASTS ═══════════ -->
+  <div id="toast-container" role="alert" aria-live="polite"></div>
+
+  <!-- ═══════════ CONFIRM DIALOG ═══════════ -->
+  <div class="confirm-overlay" id="confirm-overlay" role="dialog" aria-modal="true">
+    <div class="confirm-box">
+      <div class="confirm-icon">⚠️</div>
+      <h3 class="confirm-title">¿Eliminar registro?</h3>
+      <p class="confirm-msg" id="confirm-msg">Esta acción no se puede deshacer.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-ghost" id="confirm-cancel">Cancelar</button>
+        <button class="btn btn-danger" id="confirm-ok">Sí, eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ EDIT MODAL ═══════════ -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">✏️ Editar Registro</h3>
+        <button class="modal-close" id="modal-close" aria-label="Cerrar modal">✕</button>
+      </div>
+      <form id="edit-form" class="modal-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="edit-miembro-dca">Miembro DCA</label>
+          <input class="form-control" id="edit-miembro-dca" name="edit_miembro_dca" type="text"
+            placeholder="Nombre del miembro DCA" autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-tribu-destino">Tribu Destino</label>
+          <input class="form-control" id="edit-tribu-destino" name="edit_tribu_destino" type="number"
+            placeholder="Ej: 123" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-nombre-enrolado">Nombre Enrolado</label>
+          <input class="form-control" id="edit-nombre-enrolado" name="edit_nombre_enrolado" type="text"
+            placeholder="Nombre completo del enrolado" autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-estado">Estado</label>
+          <select class="form-control" id="edit-estado" name="edit_estado">
+            <option value="">— Selecciona estado —</option>
+            <option value="Ya suma a la Visión">Ya suma a la Visión</option>
+            <option value="Pendiente inicio">Pendiente inicio</option>
+            <option value="En proceso">En proceso</option>
+            <option value="No califica">No califica</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="edit-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════ HEADER ═══════════ -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <div class="logo-area">
+        <div class="logo-icon" aria-hidden="true">🐝</div>
+        <div class="logo-text">
+          <span class="logo-title">Visión Munaska</span>
+          <span class="logo-sub">CELIDER 2026</span>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="live-dot" title="Conectado a Supabase"></div>
+        <span>En vivo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════ MAIN ═══════════ -->
+  <main class="app-container" id="main-content">
+
+    <!-- TABS NAV -->
+    <nav class="tabs-nav" role="tablist" aria-label="Navegación principal">
+      <button class="tab-btn active" role="tab" id="tab-btn-vision" aria-controls="tab-vision" aria-selected="true"
+        data-tab="vision">
+        <span class="tab-icon" aria-hidden="true">🍯</span>
+        <span class="tab-label">Visión Principal</span>
+      </button>
+      <button class="tab-btn" role="tab" id="tab-btn-consultas" aria-controls="tab-consultas" aria-selected="false"
+        data-tab="consultas">
+        <span class="tab-icon" aria-hidden="true">📋</span>
+        <span class="tab-label">Consultas</span>
+      </button>
+      <button class="tab-btn" role="tab" id="tab-btn-gestion" aria-controls="tab-gestion" aria-selected="false"
+        data-tab="gestion">
+        <span class="tab-icon" aria-hidden="true">⚙️</span>
+        <span class="tab-label">Gestión</span>
+      </button>
+    </nav>
+
+    <!-- ════════════════════════════════════
+         TAB 1 — VISIÓN PRINCIPAL
+         ════════════════════════════════════ -->
+    <section class="tab-panel active" id="tab-vision" role="tabpanel" aria-labelledby="tab-btn-vision">
+      <!-- Hero -->
+      <div class="dashboard-hero glass-card" style="position:relative;">
+        <div class="floating-bees" aria-hidden="true"></div>
+
+        <div class="meta-badge">🐝 Meta Munaska</div>
+
+        <h1 class="hero-title">Nuestra Visión de 93 Vidas</h1>
+        <p class="hero-subtitle">
+          Cada abeja cuenta. Cada vida suma al panal de la comunidad.
+        </p>
+
+        <!-- Counter Ring -->
+        <div class="counter-display" aria-live="polite">
+          <div class="counter-ring" title="Progreso hacia la meta">
+            <div class="counter-inner">
+              <span class="counter-number" id="counter-number">0</span>
+              <div class="counter-divider">vidas</div>
+              <span class="counter-goal">/ 93</span>
+              <div class="counter-label">enrolados</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+          <div class="progress-header">
+            <span class="progress-title">🍯 Llenando el Panal</span>
+            <span class="progress-percent" id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="93" id="progress-bar">
+            <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-row" style="margin-top:1.25rem;">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">🐝 Total Enrolados</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-suma">0</span>
+          <span class="stat-label">✅ Suman a la Visión</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-pendiente">0</span>
+          <span class="stat-label">⏳ Pendientes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-meta">93</span>
+          <span class="stat-label">🎯 Por Completar</span>
+        </div>
+      </div>
+
+      <!-- Honeycomb Grid -->
+      <div class="glass-card" style="margin-top:1.25rem;">
+        <div class="section-title">
+          <span class="section-icon">🔶</span>
+          <h3>Panal de Vidas (93 celdas)</h3>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">
+          Cada hexágono dorado representa una vida que ya suma a la visión.
+        </p>
+        <div class="honeycomb-grid" id="honeycomb-grid" aria-label="Visualización del panal de progreso"></div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════
+         TAB 2 — CONSULTAS / DIRECTORIO
+         ════════════════════════════════════ -->
+    <section class="tab-panel" id="tab-consultas" role="tabpanel" aria-labelledby="tab-btn-consultas">
+      <div class="glass-card">
+        <div class="section-title">
+          <span class="section-icon">📋</span>
+          <h2 style="font-size:1.1rem;">Directorio de Enrolados</h2>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input class="form-control" id="search-input" type="search" placeholder="Buscar por nombre o miembro DCA..."
+              aria-label="Buscar enrolados" autocomplete="off" />
+          </div>
+          <select class="form-control" id="filter-tribu" aria-label="Filtrar por tribu">
+            <option value="">Todas las Tribus</option>
+          </select>
+          <select class="form-control" id="filter-estado" aria-label="Filtrar por estado">
+            <option value="">Todos los Estados</option>
+          </select>
+        </div>
+
+        <!-- Botón limpiar filtros -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+          <p class="results-count" id="results-count">Mostrando <span>0</span> resultados</p>
+          <button class="btn btn-ghost" id="btn-clear-filters" style="font-size:0.78rem;padding:0.4rem 0.8rem;">
+            🧹 Limpiar filtros
+          </button>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid" id="cards-grid" role="list" aria-label="Tarjetas de enrolados">
+          <div class="empty-state" style="grid-column:1/-1">
+            <div class="empty-icon">🐝</div>
+            <p>Haz clic en la pestaña para cargar los datos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════
+         TAB 3 — GESTIÓN (CRUD)
+         ════════════════════════════════════ -->
+    <section class="tab-panel" id="tab-gestion" role="tabpanel" aria-labelledby="tab-btn-gestion">
+      <!-- Formulario: Crear -->
+      <div class="glass-card" style="margin-bottom:1.25rem;">
+        <div class="section-title">
+          <span class="section-icon">➕</span>
+          <h3>Agregar Nuevo Enrolado</h3>
+        </div>
+
+        <form id="create-form" class="create-form" novalidate aria-label="Formulario de creación">
+          <div class="form-group">
+            <label class="form-label" for="nuevo-miembro-dca">Miembro DCA</label>
+            <input class="form-control" id="nuevo-miembro-dca" name="miembro_dca" type="text"
+              placeholder="Nombre del miembro DCA" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nuevo-tribu-destino">Tribu Destino</label>
+            <input class="form-control" id="nuevo-tribu-destino" name="tribu_destino" type="number"
+              placeholder="Ej: 123" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nuevo-nombre-enrolado">Nombre Enrolado</label>
+            <input class="form-control" id="nuevo-nombre-enrolado" name="nombre_enrolado" type="text"
+              placeholder="Nombre completo" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nuevo-estado">Estado</label>
+            <select class="form-control" id="nuevo-estado" name="estado_nuevo">
+              <option value="">— Selecciona —</option>
+              <option value="Ya suma a la Visión">Ya suma a la Visión</option>
+              <option value="Pendiente inicio">Pendiente inicio</option>
+              <option value="En proceso">En proceso</option>
+              <option value="No califica">No califica</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="form-actions" style="padding-top:1.5rem;">
+              <button type="submit" class="btn btn-primary" id="btn-crear">
+                🐝 Agregar Enrolado
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tabla Admin -->
+      <div class="glass-card">
+        <div class="section-title" style="justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <span class="section-icon">📊</span>
+            <h3>Tabla de Registros</h3>
+          </div>
+          <button class="btn btn-ghost" onclick="loadAdmin()" style="font-size:0.78rem;padding:0.4rem 0.8rem;">
+            🔄 Actualizar
+          </button>
+        </div>
+
+        <!-- Barra de filtros de la tabla admin -->
+        <div class="filter-bar" style="margin-bottom:0.75rem;">
+          <div class="search-wrap">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input class="form-control" id="admin-search-input" type="search"
+              placeholder="Buscar por nombre o miembro DCA..." aria-label="Buscar en la tabla" autocomplete="off" />
+          </div>
+          <select class="form-control" id="admin-filter-tribu" aria-label="Filtrar tabla por tribu">
+            <option value="">Todas las Tribus</option>
+          </select>
+          <select class="form-control" id="admin-filter-estado" aria-label="Filtrar tabla por estado">
+            <option value="">Todos los Estados</option>
+          </select>
+        </div>
+
+        <!-- Contador de resultados y limpiar filtros -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+          <p class="results-count" id="admin-results-count">Mostrando <span>0</span> registros</p>
+          <button class="btn btn-ghost" id="admin-btn-clear" style="font-size:0.78rem;padding:0.4rem 0.8rem;">
+            🧹 Limpiar filtros
+          </button>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="admin-table" aria-label="Tabla de enrolados">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Miembro DCA</th>
+                <th>Tribu</th>
+                <th>Nombre Enrolado</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tbody">
+              <tr>
+                <td colspan="6" style="text-align:center;padding:2.5rem;color:var(--text-muted)">
+                  🐝 Haz clic en la pestaña para cargar los registros.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer
+    style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.75rem;border-top:1px solid var(--dark-border);margin-top:2rem;">
+    <span>🐝 Visión Munaska — Celider &middot; <span id="footer-year"></span></span>
+    <span>💛 Hecho con amor por Antony Salcedo 🍯 &middot; <span id="footer-year"></span></span>
+  </footer>
+
+  <!-- JS — orden de carga: supabase → api → app -->
+  <script src="assets/js/supabase.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>

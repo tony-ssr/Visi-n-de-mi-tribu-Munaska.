@@ -1,0 +1,3 @@
+# GitHub Pages config
+# Tells GitHub Pages to serve content from the root
+# No Jekyll processing needed for a static SPA
