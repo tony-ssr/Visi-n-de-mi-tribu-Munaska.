@@ -14,6 +14,9 @@
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='85'>🐝</text></svg>" />
   <link rel="apple-touch-icon" href="assets/img/Logo - Munaska.png" />
 
+  <!-- SheetJS para Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -367,14 +370,19 @@
 
       <!-- Tabla Admin -->
       <div class="glass-card">
-        <div class="section-title" style="justify-content:space-between;">
+        <div class="section-title" style="justify-content:space-between; flex-wrap: wrap; gap: 1rem;">
           <div style="display:flex;align-items:center;gap:0.6rem;">
             <span class="section-icon">📊</span>
             <h3>Tabla de Registros</h3>
           </div>
-          <button class="btn btn-ghost" onclick="loadAdmin()" style="font-size:0.78rem;padding:0.4rem 0.8rem;">
-            🔄 Actualizar
-          </button>
+          <div style="display:flex; gap: 0.5rem;">
+            <button class="btn btn-ghost" onclick="downloadExcel()" style="font-size:0.78rem;padding:0.4rem 0.8rem; border: 1px solid #22c55e; color: #22c55e;">
+              Excel 📥
+            </button>
+            <button class="btn btn-ghost" onclick="loadAdmin()" style="font-size:0.78rem;padding:0.4rem 0.8rem;">
+              🔄 Actualizar
+            </button>
+          </div>
         </div>
 
         <!-- Barra de filtros de la tabla admin -->

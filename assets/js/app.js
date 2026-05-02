@@ -618,6 +618,61 @@ function escapeJs(str) {
 //  BEES FLOATING PARTICLES
 // ════════════════════════════════════════════════
 
+// ════════════════════════════════════════════════
+//  EXPORT EXCEL
+// ════════════════════════════════════════════════
+
+async function downloadExcel() {
+  showSpinner();
+  try {
+    const { data, error } = await getAllEnrolados();
+    if (error) {
+      showToast('Error al obtener datos para exportar', 'error');
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      showToast('No hay datos para exportar', 'info');
+      return;
+    }
+
+    // Preparar los datos para el Excel
+    const rows = data.map(r => ({
+      'ID': r.id,
+      'Miembro DCA': r.miembro_dca,
+      'Tribu Destino': r.tribu_destino,
+      'Nombre Enrolado': r.nombre_enrolado,
+      'Estado': r.estado
+    }));
+
+    // Crear libro y hoja
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Enrolados");
+
+    // Estética de las columnas
+    const wscols = [
+      { wch: 6 },  // ID
+      { wch: 30 }, // Miembro DCA
+      { wch: 15 }, // Tribu Destino
+      { wch: 35 }, // Nombre Enrolado
+      { wch: 25 }  // Estado
+    ];
+    worksheet['!cols'] = wscols;
+
+    // Generar archivo y descargar
+    const fileName = `Vision_Munaska_Reporte_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+
+    showToast('¡Excel generado exitosamente! 📥', 'success');
+  } catch (err) {
+    console.error('❌ Error al exportar Excel:', err);
+    showToast('Error crítico al generar el Excel', 'error');
+  } finally {
+    hideSpinner();
+  }
+}
+
 function initBeeParticles() {
   const container = document.querySelector('.floating-bees');
   if (!container) return;
