@@ -10,8 +10,9 @@
   <title>Visión Munaska 🐝 — CELIDER</title>
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='85'>🐝</text></svg>" />
-  <link rel="apple-touch-icon" href="assets/img/bee_logo.png" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='85'>🐝</text></svg>" />
+  <link rel="apple-touch-icon" href="assets/img/Logo - Munaska.png" />
 
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -54,13 +55,54 @@
       <form id="edit-form" class="modal-form" novalidate>
         <div class="form-group">
           <label class="form-label" for="edit-miembro-dca">Miembro DCA</label>
-          <input class="form-control" id="edit-miembro-dca" name="edit_miembro_dca" type="text"
-            placeholder="Nombre del miembro DCA" autocomplete="off" />
+          <select class="form-control" id="edit-miembro-dca" name="edit_miembro_dca">
+            <option value="">— Selecciona miembro —</option>
+            <option>Andrea Cerón Burgos</option>
+            <option>Andrea Liliana Melo España</option>
+            <option>Andres Ivan Colunge</option>
+            <option>Antony Stiven Salcedo Rodriguez</option>
+            <option>Astrid Yurani Galindez Valencia</option>
+            <option>Carlos Jojoa</option>
+            <option>Carlos Mario Cadena</option>
+            <option>Claudia Yohana Cortes Estrada</option>
+            <option>David Diaz</option>
+            <option>Edison Arturo Fuelpaz Valencia</option>
+            <option>Eliana Rivera Patiño</option>
+            <option>Elizabeth Caicedo</option>
+            <option>Fernanda Rosero</option>
+            <option>Flor Maria Gomez Garces</option>
+            <option>Gabriel Santiago Villacrez Bastidas</option>
+            <option>GRONE</option>
+            <option>Hernán Alirio Arteaga Coral</option>
+            <option>Jaime Andrés Benavides Muñoz</option>
+            <option>Javier Benavides</option>
+            <option>Jeison Andres Jurado Hernandez</option>
+            <option>Jerson Duban Guerra Melo</option>
+            <option>Jovita del Socorro Cárdenas</option>
+            <option>Juan Manuel Gomez Sanchez</option>
+            <option>Karol Alejandra Bravo Ordoñez</option>
+            <option>Lina Maria Arteaga Zambrano</option>
+            <option>Luis Eduardo Meneses Jaramillo</option>
+            <option>Luis Enrique Rosero Tama</option>
+            <option>Luisa Maria Riascos Chavez</option>
+            <option>Mariana Díaz Maya</option>
+            <option>Maritza Dorelly Cuases Inguilan</option>
+            <option>María José Daza Oliva</option>
+            <option>Ruth Fanny Quistanchala Cuasquer</option>
+            <option>Ximena Timana</option>
+            <option>Yamileth Valderrama Villamarin</option>
+            <option>Yeison Javier Hoyos Botina</option>
+          </select>
         </div>
         <div class="form-group">
           <label class="form-label" for="edit-tribu-destino">Tribu Destino</label>
-          <input class="form-control" id="edit-tribu-destino" name="edit_tribu_destino" type="number"
-            placeholder="Ej: 123" />
+          <select class="form-control" id="edit-tribu-destino" name="edit_tribu_destino">
+            <option value="">— Selecciona tribu —</option>
+            <option value="123">Tribu 123</option>
+            <option value="124">Tribu 124</option>
+            <option value="125">Tribu 125</option>
+            <option value="126">Tribu 126</option>
+          </select>
         </div>
         <div class="form-group">
           <label class="form-label" for="edit-nombre-enrolado">Nombre Enrolado</label>
@@ -73,8 +115,6 @@
             <option value="">— Selecciona estado —</option>
             <option value="Ya suma a la Visión">Ya suma a la Visión</option>
             <option value="Pendiente inicio">Pendiente inicio</option>
-            <option value="En proceso">En proceso</option>
-            <option value="No califica">No califica</option>
           </select>
         </div>
         <div class="modal-actions">
@@ -253,13 +293,54 @@
         <form id="create-form" class="create-form" novalidate aria-label="Formulario de creación">
           <div class="form-group">
             <label class="form-label" for="nuevo-miembro-dca">Miembro DCA</label>
-            <input class="form-control" id="nuevo-miembro-dca" name="miembro_dca" type="text"
-              placeholder="Nombre del miembro DCA" autocomplete="off" />
+            <select class="form-control" id="nuevo-miembro-dca" name="miembro_dca">
+              <option value="">— Selecciona miembro —</option>
+              <option>Andrea Cerón Burgos</option>
+              <option>Andrea Liliana Melo España</option>
+              <option>Andres Ivan Colunge</option>
+              <option>Antony Stiven Salcedo Rodriguez</option>
+              <option>Astrid Yurani Galindez Valencia</option>
+              <option>Carlos Jojoa</option>
+              <option>Carlos Mario Cadena</option>
+              <option>Claudia Yohana Cortes Estrada</option>
+              <option>David Diaz</option>
+              <option>Edison Arturo Fuelpaz Valencia</option>
+              <option>Eliana Rivera Patiño</option>
+              <option>Elizabeth Caicedo</option>
+              <option>Fernanda Rosero</option>
+              <option>Flor Maria Gomez Garces</option>
+              <option>Gabriel Santiago Villacrez Bastidas</option>
+              <option>GRONE</option>
+              <option>Hernán Alirio Arteaga Coral</option>
+              <option>Jaime Andrés Benavides Muñoz</option>
+              <option>Javier Benavides</option>
+              <option>Jeison Andres Jurado Hernandez</option>
+              <option>Jerson Duban Guerra Melo</option>
+              <option>Jovita del Socorro Cárdenas</option>
+              <option>Juan Manuel Gomez Sanchez</option>
+              <option>Karol Alejandra Bravo Ordoñez</option>
+              <option>Lina Maria Arteaga Zambrano</option>
+              <option>Luis Eduardo Meneses Jaramillo</option>
+              <option>Luis Enrique Rosero Tama</option>
+              <option>Luisa Maria Riascos Chavez</option>
+              <option>Mariana Díaz Maya</option>
+              <option>Maritza Dorelly Cuases Inguilan</option>
+              <option>María José Daza Oliva</option>
+              <option>Ruth Fanny Quistanchala Cuasquer</option>
+              <option>Ximena Timana</option>
+              <option>Yamileth Valderrama Villamarin</option>
+              <option>Yeison Javier Hoyos Botina</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="nuevo-tribu-destino">Tribu Destino</label>
-            <input class="form-control" id="nuevo-tribu-destino" name="tribu_destino" type="number"
-              placeholder="Ej: 123" />
+            <select class="form-control" id="nuevo-tribu-destino" name="tribu_destino">
+              <option value="">— Selecciona tribu —</option>
+              <option value="123">Tribu 123</option>
+              <option value="124">Tribu 124</option>
+              <option value="125">Tribu 125</option>
+              <option value="126">Tribu 126</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="nuevo-nombre-enrolado">Nombre Enrolado</label>
@@ -269,11 +350,9 @@
           <div class="form-group">
             <label class="form-label" for="nuevo-estado">Estado</label>
             <select class="form-control" id="nuevo-estado" name="estado_nuevo">
-              <option value="">— Selecciona —</option>
+              <option value="">— Selecciona estado —</option>
               <option value="Ya suma a la Visión">Ya suma a la Visión</option>
               <option value="Pendiente inicio">Pendiente inicio</option>
-              <option value="En proceso">En proceso</option>
-              <option value="No califica">No califica</option>
             </select>
           </div>
           <div class="form-group">
